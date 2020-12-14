@@ -1,7 +1,30 @@
-export default function initTooltip() {
-    const tooltips = document.querySelectorAll('[data-tooltip]');
+export default class Tooltip {
+    constructor(tooltips) {
+        this.tooltips = document.querySelectorAll(tooltips);
 
-    function criarTooltipBox(element) {
+        this.onMouseLeave = this.onMouseLeave.bind(this);
+        this.onMouseMove = this.onMouseMove.bind(this);
+        this.onMouseOver = this.onMouseOver.bind(this);
+    }
+
+    onMouseMove(event) {
+        this.tooltipBox.style.top = `${event.pageY + 12}px`;
+        if (event.pageX + 240 > window.innerWidth) {
+            this.tooltipBox.style.left = `${event.pageX - 180}px`;
+        } else {
+            this.tooltipBox.style.left = `${event.pageX + 12}px`;
+        }
+    };
+
+    onMouseLeave({ currentTarget }) {
+        this.tooltipBox.remove();
+
+        // remover o event quando tirar o mouse do mapa
+        currentTarget.removeEventListener('mouseleave', this.onMouseLeave);
+        currentTarget.removeEventListener('mousemove', this.onMouseMove);
+    };
+
+    criarTooltipBox(element) {
         const tooltipBox = document.createElement('div');
         const text = element.getAttribute('aria-label');
 
@@ -9,38 +32,27 @@ export default function initTooltip() {
         tooltipBox.innerText = text;
         document.body.appendChild(tooltipBox);
 
-        return tooltipBox;
+        this.tooltipBox = tooltipBox;
     }
 
-    const onMouseMove = {
-        handleEvent(event) {
-            this.tooltipBox.style.top = `${event.pageY + 12}px`;
-            this.tooltipBox.style.left = `${event.pageX + 12}px`;
-        },
-    };
+    onMouseOver({ currentTarget }) {
+        // cria a tooltipoBox e coloca em uma proriedade
+        this.criarTooltipBox(currentTarget);
 
-    const onMouseLeave = {
-        // tooltipBox: '',
-        // element: '',
-        handleEvent() {
-            this.tooltipBox.remove();
-            this.element.removeEventListener('mouseleave', onMouseLeave); // para remover o evento quando tirar o mouse do mapa
-            this.element.removeEventListener('mousemove', onMouseMove);
-        },
-    };
-
-    function onMouseOver() {
-        const tooltipBox = criarTooltipBox(this);
-
-        onMouseMove.tooltipBox = tooltipBox;
-        this.addEventListener('mousemove', onMouseMove);
-
-        onMouseLeave.tooltipBox = tooltipBox;
-        onMouseLeave.element = this;
-        this.addEventListener('mouseleave', onMouseLeave);
+        currentTarget.addEventListener('mousemove', this.onMouseMove);
+        currentTarget.addEventListener('mouseleave', this.onMouseLeave);
     }
 
-    tooltips.forEach((item) => {
-        item.addEventListener('mouseover', onMouseOver);
-    });
+    addTooltipsEvent() {
+        this.tooltips.forEach((item) => {
+            item.addEventListener('mouseover', this.onMouseOver);
+        });
+    }
+
+    init() {
+        if (this.tooltips.length) {
+            this.addTooltipsEvent();
+        }
+        return this;
+    }
 }
