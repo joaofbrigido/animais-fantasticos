@@ -1,3 +1,5 @@
+import debounce from './debounce.js';
+
 export default class ScrollAnima {
   constructor(sections) {
     this.sections = document.querySelectorAll(sections);
@@ -7,6 +9,7 @@ export default class ScrollAnima {
   }
 
   getDistance() {
+    console.log('teste')
     this.distance = [...this.sections].map(section => {
       const offset = section.offsetTop;
       return {
