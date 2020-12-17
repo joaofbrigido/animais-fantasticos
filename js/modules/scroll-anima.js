@@ -5,11 +5,10 @@ export default class ScrollAnima {
     this.sections = document.querySelectorAll(sections);
     this.windowMetade = window.innerHeight * 0.8;
 
-    this.checkDistance = this.checkDistance.bind(this);
+    this.checkDistance = debounce(this.checkDistance.bind(this), 50);
   }
 
   getDistance() {
-    console.log('teste')
     this.distance = [...this.sections].map(section => {
       const offset = section.offsetTop;
       return {
