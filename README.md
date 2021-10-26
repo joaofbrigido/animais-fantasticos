@@ -1,7 +1,7 @@
 # animais-fantasticos
 Projeto Final do curso de Javascript Completo da *Origamid*. Confira o projeto em [joaofbrigido.github.io/animais-fantasticos](https://joaofbrigido.github.io/animais-fantasticos/)
 
-## Tecnologias Utilizadas:
+### Tecnologias Utilizadas:
 - HTML5
 - CCS3
 - Javascript
